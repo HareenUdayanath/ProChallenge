@@ -11,7 +11,7 @@ public class ProcessSimulator {
         start();   
         
     }
-    static void start(){
+    public static void start(){
         SimulatorInterface si = new SimulatorInterface();
         si.setVisible(true);        
         SimulatorInterface.proRepTable.drawScreen(0);

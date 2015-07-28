@@ -7,7 +7,9 @@ package interfaces;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import processsimulator.AProcess;
+import processsimulator.ProcessSimulator;
 import processsimulator.ReadyQueue;
 import processsimulator.Schedular;
 
@@ -339,7 +341,7 @@ public class SimulatorInterface extends javax.swing.JFrame {
     }
     
     private void nextButActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButActionPerformed
-        if(i<20)
+        try{
             if(this.methodNo==0){
                 AProcess next = this.schdular.firstComeFirstServe();
                 ReadyQueue ready = schdular.getReadyQueue();
@@ -354,12 +356,14 @@ public class SimulatorInterface extends javax.swing.JFrame {
                     i++;         
                 }            
             }else if(this.methodNo==1){
-                System.out.println("rr");
+                
                 AProcess next = this.schdular.roundRobin();
                 ReadyQueue ready = schdular.getReadyQueue();
-                System.out.println("fdgfd" +next.getArrivalTime());
-                if(i<next.getArrivalTime())
-                    i = next.getArrivalTime();
+                
+                if(next.getProcessWaitTime()>0){
+                    i+= next.getProcessWaitTime();
+                    next.setProcessWaitTime(0);
+                }
                 drawReadyQueue(ready);                       
                 if(next.getServiceTime()-next.getExcutedTime()>0){
                     for(int n=0;n<this.schdular.getpTime();n++){                        
@@ -376,7 +380,12 @@ public class SimulatorInterface extends javax.swing.JFrame {
             }else if(this.methodNo==3){
                 AProcess next = this.schdular.hrrnPree();
                 ReadyQueue ready = schdular.getReadyQueue();
-
+                
+                if(next.getProcessWaitTime()>0){
+                    i+= next.getProcessWaitTime();
+                    next.setProcessWaitTime(0);
+                }
+                
                 drawReadyQueue(ready);  
                 if(next.getServiceTime()-next.getExcutedTime()>0){
                      for(int n=0;n<this.schdular.getpTime();n++){                         
@@ -393,8 +402,10 @@ public class SimulatorInterface extends javax.swing.JFrame {
             }else{
                 AProcess next = this.schdular.hrrn();
                 ReadyQueue ready = schdular.getReadyQueue();
-                if(i<next.getArrivalTime())
-                    i = next.getArrivalTime();
+                if(next.getProcessWaitTime()>0){
+                    i+= next.getProcessWaitTime();
+                    next.setProcessWaitTime(0);
+                }
                 drawReadyQueue(ready);    
                 for(int n=0;n<next.getServiceTime();n++){
                     SimulatorInterface.proRepTable.rect(this.xPositions[i],this.yPositions[proNumber(next.getName())], "QQ");
@@ -402,6 +413,27 @@ public class SimulatorInterface extends javax.swing.JFrame {
                 }
             }           
             this.TPUT.setText(String.valueOf(this.schdular.getThroughput()));
+        }catch(ArrayIndexOutOfBoundsException ex){
+                int option = JOptionPane.showConfirmDialog(null, "Do you want another?", "Simulator", JOptionPane.YES_NO_OPTION);
+                if(option==JOptionPane.OK_OPTION){                    
+                        new Thread(){
+                            public void run(){
+                                ProcessSimulator.start();
+                            }
+                        }.start(); 
+                        this.dispose();
+                }
+        }catch(NullPointerException ex){
+                int option = JOptionPane.showConfirmDialog(null, "Do you want another?", "Simulator", JOptionPane.YES_NO_OPTION);
+                if(option==JOptionPane.OK_OPTION){                    
+                        new Thread(){
+                            public void run(){
+                                ProcessSimulator.start();
+                            }
+                        }.start(); 
+                        this.dispose();
+                }
+        }
     }//GEN-LAST:event_nextButActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
