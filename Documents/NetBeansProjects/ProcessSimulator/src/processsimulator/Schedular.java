@@ -39,53 +39,75 @@ public class Schedular {
                 this.newProcessList.remove(p);            
             }
          }else{            
+            int count = 0;
             while(true){
-                this.currentTime++;
-                for(AProcess p:this.newProcessList){
-                    System.out.println(p.getArrivalTime()+"    "+this.currentTime);
-                    if(p.getArrivalTime()<=this.currentTime){            
-                        System.out.println("hjbhj");
+                this.currentTime++;     
+                count++;
+                if(this.newProcessList.size()==0)
+                    break;
+                for(AProcess p:this.newProcessList){                   
+                    if(p.getArrivalTime()<=this.getCurrentTime()){ 
+                        p.setProcessWaitTime(count);
                         this.getReadyQueue().add(p);
                         this.newProcessList.remove(p);
-                        return firstComeFirstServe();                    
+                        return hrrn();                    
                     }
-                }
-                if(this.currentTime>20)
-                    break;
+                }                
             }
         }     
         return next;
     }    
      
     public AProcess hrrnPree(){
-        next = this.getReadyQueue().remove();
-        this.currentTime+=pTime;
-        next.setExcutedTime(next.getExcutedTime()+pTime);      
-        
-        for(AProcess p:this.newProcessList){
-            if(p.getArrivalTime()<=this.getCurrentTime()){                 
-                this.getReadyQueue().add(p);         
+        if(this.getReadyQueue().size()!=0){ 
+            next = this.getReadyQueue().remove();
+            this.currentTime+=pTime;
+            next.setExcutedTime(next.getExcutedTime()+pTime);      
+
+            for(AProcess p:this.newProcessList){
+                if(p.getArrivalTime()<=this.getCurrentTime()){                 
+                    this.getReadyQueue().add(p);         
+                }
             }
-        }
-        for(AProcess p:this.getReadyQueue()){
-            p.setIsComeFirst(true);
-            p.setPriority(giveRatioPree(p, this.getCurrentTime()));            
-            this.newProcessList.remove(p);            
-        }
-        
-        if(next.getExcutedTime()<next.getServiceTime()){
-            next.setIsComeFirst(false);
-            next.setArrivalTime(getCurrentTime());
-            next.setPriority(giveRatioPree(next, this.getCurrentTime()));
-            this.getReadyQueue().add(next);
-        }
-        
-        return next;
+            for(AProcess p:this.getReadyQueue()){
+                p.setIsComeFirst(true);
+                p.setPriority(giveRatioPree(p, this.getCurrentTime()));            
+                this.newProcessList.remove(p);            
+            }
+
+            if(next.getExcutedTime()<next.getServiceTime()){
+                next.setIsComeFirst(false);
+                next.setArrivalTime(getCurrentTime());
+                next.setPriority(giveRatioPree(next, this.getCurrentTime()));
+                this.getReadyQueue().add(next);
+            }
+
+            return next;
+       }else{          
+            int count = 0;
+            while(true){
+                this.currentTime++;     
+                count++;
+                if(this.newProcessList.size()==0)
+                    break;
+                for(AProcess p:this.newProcessList){                   
+                    if(p.getArrivalTime()<=this.getCurrentTime()){ 
+                        p.setProcessWaitTime(count);
+                        this.getReadyQueue().add(p);
+                        this.newProcessList.remove(p);
+                        return hrrnPree();                    
+                    }
+                }               
+                
+            }
+        }   
+        return null;
     }   
     
     public AProcess roundRobin(){        
         if(this.getReadyQueue().size()!=0){            
             next = this.getReadyQueue().pop();
+            
             this.currentTime+=pTime;
             next.setExcutedTime(next.getExcutedTime()+pTime);      
                      
@@ -103,18 +125,22 @@ public class Schedular {
                 this.getReadyQueue().add(next);
             }        
             return next;
-        }else{            
+        }else{          
+            int count = 0;
             while(true){
-                this.currentTime++;                
+                this.currentTime++;     
+                count++;
+                if(this.newProcessList.size()==0)
+                    break;
                 for(AProcess p:this.newProcessList){                   
-                    if(p.getArrivalTime()<=this.getCurrentTime()){                        
+                    if(p.getArrivalTime()<=this.getCurrentTime()){ 
+                        p.setProcessWaitTime(count);
                         this.getReadyQueue().add(p);
                         this.newProcessList.remove(p);
                         return roundRobin();                    
                     }
-                }
-                if(this.currentTime>20)
-                    break;
+                }               
+                
             }
         }   
         return null;
@@ -135,20 +161,26 @@ public class Schedular {
                 this.newProcessList.remove(p);            
             }            
             return next;
-        }else{            
+        }else{    
+            int count=0;
             while(true){
                 this.currentTime++;
+                 count++;
+                if(this.newProcessList.size()==0)
+                    break;
                 for(AProcess p:this.newProcessList){
                     System.out.println(p.getArrivalTime()+"    "+this.currentTime);
                     if(p.getArrivalTime()<=this.currentTime){            
-                        System.out.println("hjbhj");
+                         System.out.println("dddd  "+  count);
+                        p.setProcessWaitTime(count);
                         this.getReadyQueue().add(p);
                         this.newProcessList.remove(p);
                         return firstComeFirstServe();                    
                     }
                 }
             }
-        }       
+        } 
+        return null;
     }   
     
     public double getThroughput(){

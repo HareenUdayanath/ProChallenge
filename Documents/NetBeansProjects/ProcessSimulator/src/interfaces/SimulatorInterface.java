@@ -124,7 +124,7 @@ public class SimulatorInterface extends javax.swing.JFrame {
             }
         });
 
-        conBut.setText("Conferm");
+        conBut.setText("Confirm");
         conBut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 conButActionPerformed(evt);
@@ -343,9 +343,11 @@ public class SimulatorInterface extends javax.swing.JFrame {
             if(this.methodNo==0){
                 AProcess next = this.schdular.firstComeFirstServe();
                 ReadyQueue ready = schdular.getReadyQueue();
-                if(i<next.getArrivalTime())
-                    i = next.getArrivalTime();
-                //i = this.schdular.getCurrentTime();
+                if(next.getProcessWaitTime()>0){
+                    i+= next.getProcessWaitTime();
+                    next.setProcessWaitTime(0);
+                }
+                                
                 drawReadyQueue(ready);
                 for(int n=0;n<next.getServiceTime();n++){
                     SimulatorInterface.proRepTable.rect(this.xPositions[i],this.yPositions[proNumber(next.getName())], "QQ");

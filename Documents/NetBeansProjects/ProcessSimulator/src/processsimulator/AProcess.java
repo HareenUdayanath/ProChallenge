@@ -7,6 +7,7 @@ public class AProcess {
     private int excutedTime;
     private double priority;
     private boolean isComeFirst;
+    private int processWaitTime;
     
     public AProcess(String name,int arrivalTime,int serviceTime){
         this.name = name;
@@ -15,6 +16,8 @@ public class AProcess {
         this.excutedTime = 0;
         this.priority = 0;
         this.isComeFirst = true;
+        this.processWaitTime = 0;
+        
     }
     
 
@@ -86,6 +89,20 @@ public class AProcess {
      */
     public void setArrivalTime(int arrivalTime) {
         this.arrivalTime = arrivalTime;
+    }
+
+    /**
+     * @return the processWaitTime
+     */
+    public int getProcessWaitTime() {
+        return processWaitTime;
+    }
+
+    /**
+     * @param processWaitTime the processWaitTime to set
+     */
+    public void setProcessWaitTime(int processWaitTime) {
+        this.processWaitTime = processWaitTime;
     }
    
 }
