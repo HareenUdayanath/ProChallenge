@@ -24,20 +24,36 @@ public class Schedular {
     }
     
     public AProcess hrrn(){
-        next = this.getReadyQueue().remove();
-        this.currentTime+=next.getServiceTime();
-        next.setExcutedTime(next.getServiceTime());
-        
-        for(AProcess p:this.newProcessList){
-            if(p.getArrivalTime()<=this.currentTime){                
-                this.getReadyQueue().add(p);         
+        if(this.getReadyQueue().size()!=0){
+            next = this.getReadyQueue().remove();
+            this.currentTime+=next.getServiceTime();
+            next.setExcutedTime(next.getServiceTime());
+
+            for(AProcess p:this.newProcessList){
+                if(p.getArrivalTime()<=this.getCurrentTime()){                
+                    this.getReadyQueue().add(p);         
+                }
             }
-        }
-        for(AProcess p:this.getReadyQueue()){
-            p.setPriority(giveRatio(p,this.currentTime));            
-            this.newProcessList.remove(p);            
-        }
-        
+            for(AProcess p:this.getReadyQueue()){
+                p.setPriority(giveRatio(p, this.getCurrentTime()));            
+                this.newProcessList.remove(p);            
+            }
+         }else{            
+            while(true){
+                this.currentTime++;
+                for(AProcess p:this.newProcessList){
+                    System.out.println(p.getArrivalTime()+"    "+this.currentTime);
+                    if(p.getArrivalTime()<=this.currentTime){            
+                        System.out.println("hjbhj");
+                        this.getReadyQueue().add(p);
+                        this.newProcessList.remove(p);
+                        return firstComeFirstServe();                    
+                    }
+                }
+                if(this.currentTime>20)
+                    break;
+            }
+        }     
         return next;
     }    
      
@@ -47,69 +63,113 @@ public class Schedular {
         next.setExcutedTime(next.getExcutedTime()+pTime);      
         
         for(AProcess p:this.newProcessList){
-            if(p.getArrivalTime()<=this.currentTime){                 
+            if(p.getArrivalTime()<=this.getCurrentTime()){                 
                 this.getReadyQueue().add(p);         
             }
         }
         for(AProcess p:this.getReadyQueue()){
             p.setIsComeFirst(true);
-            p.setPriority(giveRatioPree(p,this.currentTime));            
+            p.setPriority(giveRatioPree(p, this.getCurrentTime()));            
             this.newProcessList.remove(p);            
         }
         
         if(next.getExcutedTime()<next.getServiceTime()){
             next.setIsComeFirst(false);
-            next.setArrivalTime(currentTime);
-            next.setPriority(giveRatioPree(next,this.currentTime));
+            next.setArrivalTime(getCurrentTime());
+            next.setPriority(giveRatioPree(next, this.getCurrentTime()));
             this.getReadyQueue().add(next);
         }
         
         return next;
     }   
     
-    public AProcess roundRobin(){
-        next = this.getReadyQueue().pop();
-        this.currentTime+=pTime;
-        next.setExcutedTime(next.getExcutedTime()+pTime);      
-        
-        for(AProcess p:this.newProcessList){
-            if(p.getArrivalTime()<=this.currentTime){                 
-                this.getReadyQueue().add(p);         
+    public AProcess roundRobin(){        
+        if(this.getReadyQueue().size()!=0){            
+            next = this.getReadyQueue().pop();
+            this.currentTime+=pTime;
+            next.setExcutedTime(next.getExcutedTime()+pTime);      
+                     
+            for(AProcess p:this.newProcessList){
+                System.out.println(p.getArrivalTime());
+                if(p.getArrivalTime()<=this.getCurrentTime()){                 
+                    this.getReadyQueue().add(p);         
+                }
             }
-        }
-        for(AProcess p:this.getReadyQueue()){               
-            this.newProcessList.remove(p);            
-        }
-        
-        if(next.getExcutedTime()<next.getServiceTime()){           
-            this.getReadyQueue().add(next);
-        }        
-        return next;
+            for(AProcess p:this.getReadyQueue()){                 
+                this.newProcessList.remove(p);            
+            }
+            System.out.println(next.getExcutedTime());
+            if(next.getExcutedTime()<next.getServiceTime()){                   
+                this.getReadyQueue().add(next);
+            }        
+            return next;
+        }else{            
+            while(true){
+                this.currentTime++;                
+                for(AProcess p:this.newProcessList){                   
+                    if(p.getArrivalTime()<=this.getCurrentTime()){                        
+                        this.getReadyQueue().add(p);
+                        this.newProcessList.remove(p);
+                        return roundRobin();                    
+                    }
+                }
+                if(this.currentTime>20)
+                    break;
+            }
+        }   
+        return null;
     }   
     
     public AProcess firstComeFirstServe(){
-        next = this.getReadyQueue().pop();
-        this.currentTime+=next.getServiceTime();  
-        next.setExcutedTime(next.getServiceTime());
-        
-        for(AProcess p:this.newProcessList){
-            if(p.getArrivalTime()<=this.currentTime){                 
-                this.getReadyQueue().add(p);         
+        if(this.getReadyQueue().size()!=0){
+            next = this.getReadyQueue().pop();
+            this.currentTime+=next.getServiceTime();  
+            next.setExcutedTime(next.getServiceTime());
+
+            for(AProcess p:this.newProcessList){
+                if(p.getArrivalTime()<=this.getCurrentTime()){                 
+                    this.getReadyQueue().add(p);         
+                }
             }
-        }
-        for(AProcess p:this.getReadyQueue()){               
-            this.newProcessList.remove(p);            
-        }            
-        return next;
+            for(AProcess p:this.getReadyQueue()){               
+                this.newProcessList.remove(p);            
+            }            
+            return next;
+        }else{            
+            while(true){
+                this.currentTime++;
+                for(AProcess p:this.newProcessList){
+                    System.out.println(p.getArrivalTime()+"    "+this.currentTime);
+                    if(p.getArrivalTime()<=this.currentTime){            
+                        System.out.println("hjbhj");
+                        this.getReadyQueue().add(p);
+                        this.newProcessList.remove(p);
+                        return firstComeFirstServe();                    
+                    }
+                }
+            }
+        }       
     }   
     
     public double getThroughput(){
         int count = 0;
-        for(AProcess p:this.processList){
+        for(AProcess p:this.getProcessList()){
             if(p.getExcutedTime()>=p.getServiceTime())
                 count++;
         }
-        return ((float)count)/this.currentTime;
+        return ((float)count)/this.getCurrentTime();
+    }
+    
+    public double[] getPresentages(){
+        double[] presentages = new double[this.getProcessList().length];
+        int count = 0;
+        for(AProcess p:this.getProcessList()){
+            if(p.getExcutedTime()<=p.getServiceTime())
+                presentages[count++] = (((double)p.getExcutedTime())/p.getServiceTime())*100;
+            else
+                presentages[count++] = 100;
+        }
+        return presentages;
     }
     
     private double giveRatio(AProcess p,int time){        
@@ -151,6 +211,20 @@ public class Schedular {
      */
     public void setpTime(int pTime) {
         this.pTime = pTime;
+    }
+
+    /**
+     * @return the processList
+     */
+    public AProcess[] getProcessList() {
+        return processList;
+    }
+
+    /**
+     * @return the currentTime
+     */
+    public int getCurrentTime() {
+        return currentTime;
     }
     
 }

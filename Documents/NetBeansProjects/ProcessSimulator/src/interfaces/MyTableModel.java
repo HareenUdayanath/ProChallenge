@@ -13,30 +13,31 @@ import javax.swing.table.AbstractTableModel;
  */
 public class MyTableModel extends AbstractTableModel {
     private int rows;
+    private int coloums = 3;
     
     public MyTableModel(int rows){
         this.rows = rows;
     }
+    public MyTableModel(int rows,double[] ratios){
+        this.coloums = 4;
+        this.rows = rows;
+        
+    }
     private Object [][]data = new Object [][] {
-                {"A", null, null},
-                {"B", null, null},
-                {"C", null, null},
-                {"D", null, null},
-                {"E", null, null},
-                {"F", null, null},
-                {"G", null, null},
-                {"H", null, null},
-                {"I", null, null},
-                {"J", null, null},
-                {"K", null, null},
-                {"L", null, null},
-                {"M", null, null},
-                {"O", null, null},
-                {"P", null, null},
-                {"Q", null, null}
+                {"A", null, null,null},
+                {"B", null, null,null},
+                {"C", null, null,null},
+                {"D", null, null,null},
+                {"E", null, null,null},
+                {"F", null, null,null},
+                {"G", null, null,null},
+                {"H", null, null,null},
+                {"I", null, null,null},
+                {"J", null, null,null}             
+                
     };
     private String [] columnNames = new String [] {
-         "Process", "Arrival Time", "Service Time"
+         "Process", "Arrival Time", "Service Time","Responce Ratio"
     };
     
     Class[] types = new Class [] {
@@ -44,7 +45,7 @@ public class MyTableModel extends AbstractTableModel {
     };
     
     boolean[] canEdit = new boolean [] {
-        false, true, true
+        false, true, true, false
     };
     
     public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -62,7 +63,7 @@ public class MyTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 3;
+        return this.coloums;
     }
 
     @Override
@@ -78,5 +79,19 @@ public class MyTableModel extends AbstractTableModel {
         data[row][col] = Integer.valueOf(String.valueOf(value));
        }catch(Exception ex){}
     }    
+
+    /**
+     * @param data the data to set
+     */
+    public void setData(Object[][] data) {
+        this.data = data;
+    }
+
+    /**
+     * @param coloums the coloums to set
+     */
+    public void setColoums(int coloums) {
+        this.coloums = coloums;
+    }
     
 }

@@ -1,8 +1,6 @@
 package processsimulator;
 
 
-import interfaces.Chart1;
-import interfaces.FullRep;
 import interfaces.SimulatorInterface;
 
 
@@ -14,6 +12,8 @@ public class ProcessSimulator {
         si.setVisible(true);        
         SimulatorInterface.proRepTable.drawScreen(0);
         SimulatorInterface.queueRep.drawQueue("readyQ");
+        /*ReadyQueue q = new ReadyQueue();
+        q.pop();*/
         
         /*JFrame f = new JFrame();
         f.setResizable(false);
