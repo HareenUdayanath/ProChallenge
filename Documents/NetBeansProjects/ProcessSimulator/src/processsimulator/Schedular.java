@@ -210,12 +210,16 @@ public class Schedular {
         return presentages;
     }
     
-    private double giveRatio(AProcess p,int time){        
-        return ((time-p.getArrivalTime())+p.getServiceTime())/((double)p.getServiceTime());
+    private double giveRatio(AProcess p,int time){      
+        int waitedTime = time-p.getArrivalTime();
+        double serviceTime = (double)p.getServiceTime();
+        return (waitedTime+serviceTime)/(serviceTime);
     }
     
-    private double giveRatioPree(AProcess p,int time){        
-        return ((time-p.getArrivalTime())+(p.getServiceTime()-p.getExcutedTime()))/((double)(p.getServiceTime()-p.getExcutedTime()));
+    private double giveRatioPree(AProcess p,int time){   
+        int waitedTime = time-p.getArrivalTime();
+        double remainingTime = (double)(p.getServiceTime()-p.getExcutedTime());
+        return (waitedTime+remainingTime)/(remainingTime);
     }
         
     private void createReady(){

@@ -5,8 +5,6 @@
 package interfaces;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import processsimulator.AProcess;
 import processsimulator.ProcessSimulator;
@@ -34,6 +32,7 @@ public class SimulatorInterface extends javax.swing.JFrame {
     private int i = 0;
     private int methodNo;
     private int pTime=1;
+    private int speed = 200;
     
    
     
@@ -70,6 +69,28 @@ public class SimulatorInterface extends javax.swing.JFrame {
        }
        return -1;
     }
+    
+    private void listSort(ArrayList<AProcess> list){
+        ArrayList<AProcess> temp = (ArrayList<AProcess>)list.clone();
+        list.clear();
+        int size = temp.size();
+        for(int i = 0;i<size;i++){
+            AProcess minArr = temp.get(0);
+            for(AProcess p:temp){
+                if(p.getArrivalTime()<minArr.getArrivalTime())
+                    minArr = p;
+            }
+            list.add(minArr);
+            temp.remove(minArr);
+        }
+    }
+    private boolean checkArrivalTime(ArrayList<AProcess> sortedList){
+        for(int i = 0;i<(sortedList.size()-1);i++){
+            if(sortedList.get(i).getArrivalTime()==sortedList.get(i+1).getArrivalTime())
+                return false;            
+        }
+        return true;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -100,6 +121,7 @@ public class SimulatorInterface extends javax.swing.JFrame {
         sPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Data"));
 
@@ -455,6 +477,8 @@ public class SimulatorInterface extends javax.swing.JFrame {
              
              }
         }
+        listSort(list);
+        System.out.println(checkArrivalTime(list));
         this.schdular = new Schedular(list);
         this.schdular.setpTime(pTime);
         ReadyQueue ready = schdular.getReadyQueue();
@@ -467,8 +491,100 @@ public class SimulatorInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
     private void simButActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simButActionPerformed
-        while(schdular.getReadyQueue().size()>0){
-           
+        while(true){
+            try {Thread.sleep(speed);
+            } catch (InterruptedException ex) {}
+            try{
+                if(this.methodNo==0){
+                    AProcess next = this.schdular.firstComeFirstServe();
+                    ReadyQueue ready = schdular.getReadyQueue();
+                    if(next.getProcessWaitTime()>0){
+                        i+= next.getProcessWaitTime();
+                        next.setProcessWaitTime(0);
+                    }
+
+                    drawReadyQueue(ready);
+                    for(int n=0;n<next.getServiceTime();n++){
+                        SimulatorInterface.proRepTable.rect(this.xPositions[i],this.yPositions[proNumber(next.getName())], "QQ");
+                        i++;       
+                        try {Thread.sleep(speed);
+                        } catch(InterruptedException ex) {}
+                    }            
+                }else if(this.methodNo==1){
+
+                    AProcess next = this.schdular.roundRobin();
+                    ReadyQueue ready = schdular.getReadyQueue();
+
+                    if(next.getProcessWaitTime()>0){
+                        i+= next.getProcessWaitTime();
+                        next.setProcessWaitTime(0);
+                    }
+                    drawReadyQueue(ready);                       
+                    if(next.getServiceTime()-next.getExcutedTime()>0){
+                        for(int n=0;n<this.schdular.getpTime();n++){                        
+                            SimulatorInterface.proRepTable.rect(this.xPositions[i],this.yPositions[proNumber(next.getName())], "QQ");
+                            i++;         
+                        }
+                    }else{
+                        for(int n=0;n<(next.getServiceTime()-next.getExcutedTime()+this.schdular.getpTime());n++){
+                            SimulatorInterface.proRepTable.rect(this.xPositions[i],this.yPositions[proNumber(next.getName())], "QQ");
+                            i++;         
+                        }
+                    }
+
+                }else if(this.methodNo==3){
+                    AProcess next = this.schdular.hrrnPree();
+                    ReadyQueue ready = schdular.getReadyQueue();
+
+                    if(next.getProcessWaitTime()>0){
+                        i+= next.getProcessWaitTime();
+                           next.setProcessWaitTime(0);
+                    }
+
+                    drawReadyQueue(ready);  
+                    if(next.getServiceTime()-next.getExcutedTime()>0){
+                         for(int n=0;n<this.schdular.getpTime();n++){                         
+                             SimulatorInterface.proRepTable.rect(this.xPositions[i],this.yPositions[proNumber(next.getName())], "QQ");
+                             i++;         
+                         }
+                    }else{
+                        for(int n=0;n<(next.getServiceTime()-next.getExcutedTime()+this.schdular.getpTime());n++){
+                            SimulatorInterface.proRepTable.rect(this.xPositions[i],this.yPositions[proNumber(next.getName())], "QQ");
+                            i++;         
+                        }
+                    }
+
+                }else{
+                    AProcess next = this.schdular.hrrn();
+                    ReadyQueue ready = schdular.getReadyQueue();
+                    if(next.getProcessWaitTime()>0){
+                        i+= next.getProcessWaitTime();
+                        next.setProcessWaitTime(0);
+                    }
+                    drawReadyQueue(ready);    
+                    for(int n=0;n<next.getServiceTime();n++){
+                        SimulatorInterface.proRepTable.rect(this.xPositions[i],this.yPositions[proNumber(next.getName())], "QQ");
+                        i++;     
+                        try {Thread.sleep(speed);
+                        } catch(InterruptedException ex) {}
+                    }
+                }           
+                this.TPUT.setText(String.valueOf(this.schdular.getThroughput()));
+            }catch(ArrayIndexOutOfBoundsException | NullPointerException ex){
+                    int option = JOptionPane.showConfirmDialog(null, "Do you want another?", "Simulator", JOptionPane.YES_NO_OPTION);
+                    if(option==JOptionPane.OK_OPTION){                    
+                            new Thread(){
+                                public void run(){
+                                    ProcessSimulator.start();
+                                }
+                            }.start(); 
+                            this.dispose();
+                            break;
+                    }else{
+                        this.dispose();
+                        break;
+                    }
+            }
         }
     }//GEN-LAST:event_simButActionPerformed
 
