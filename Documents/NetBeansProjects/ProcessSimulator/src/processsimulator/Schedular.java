@@ -120,7 +120,7 @@ public class Schedular {
             for(AProcess p:this.newProcessList){
                 System.out.println(p.getArrivalTime());
                 if(p.getArrivalTime()<=this.getCurrentTime()){                 
-                    this.getReadyQueue().add(p);         
+                    this.getReadyQueue().add(p);                       // Adding processes to the ready queue
                 }
             }
             for(AProcess p:this.getReadyQueue()){                 
@@ -152,6 +152,8 @@ public class Schedular {
         return null;
     }   
     
+    // The First Come First Serve algorithm...............................................
+    
     public AProcess firstComeFirstServe(){
         if(this.getReadyQueue().size()!=0){
             next = this.getReadyQueue().pop();
@@ -160,7 +162,7 @@ public class Schedular {
 
             for(AProcess p:this.newProcessList){
                 if(p.getArrivalTime()<=this.getCurrentTime()){                 
-                    this.getReadyQueue().add(p);         
+                    this.getReadyQueue().add(p);                   // Add processses to the ready queue  
                 }
             }
             for(AProcess p:this.getReadyQueue()){               
@@ -189,7 +191,7 @@ public class Schedular {
         return null;
     }   
     
-    public double getThroughput(){
+    public double getThroughput(){                  // Getting the throughput
         int count = 0;
         for(AProcess p:this.getProcessList()){
             if(p.getExcutedTime()>=p.getServiceTime())
@@ -198,7 +200,7 @@ public class Schedular {
         return ((float)count)/this.getCurrentTime();
     }
     
-    public double[] getPresentages(){
+    public double[] getPercentages(){                   // Getting the percentage of completence of a process at a given time 
         double[] presentages = new double[this.getProcessList().length];
         int count = 0;
         for(AProcess p:this.getProcessList()){
@@ -210,19 +212,19 @@ public class Schedular {
         return presentages;
     }
     
-    private double giveRatio(AProcess p,int time){      
+    private double giveRatio(AProcess p,int time){         // Get the HRRN ratio
         int waitedTime = time-p.getArrivalTime();
         double serviceTime = (double)p.getServiceTime();
         return (waitedTime+serviceTime)/(serviceTime);
     }
     
-    private double giveRatioPree(AProcess p,int time){   
+    private double giveRatioPree(AProcess p,int time){         // Get the HRRN preemptive ratio
         int waitedTime = time-p.getArrivalTime();
         double remainingTime = (double)(p.getServiceTime()-p.getExcutedTime());
         return (waitedTime+remainingTime)/(remainingTime);
     }
         
-    private void createReady(){
+    private void createReady(){                  // Creating the ready queue
         this.readyQueue = new ReadyQueue();
         for(AProcess p:this.newProcessList){
             if(p.getArrivalTime()==0){
