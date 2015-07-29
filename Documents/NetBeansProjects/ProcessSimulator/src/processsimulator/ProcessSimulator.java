@@ -14,7 +14,7 @@ public class ProcessSimulator {
     public static void start(){
         SimulatorInterface si = new SimulatorInterface();
         si.setVisible(true);        
-        SimulatorInterface.proRepTable.drawScreen(0);
-        SimulatorInterface.queueRep.drawQueue("readyQ");
+        SimulatorInterface.proRepTable.drawScreen(0);        // Drawing the process simulation diagram
+        SimulatorInterface.queueRep.drawQueue("readyQ");     // Drawing the ready queue
     }
 }

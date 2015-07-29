@@ -1,12 +1,12 @@
 package processsimulator;
 
-public class AProcess {
+public class AProcess {         // The class to store process objects
     private String name;
     private int arrivalTime;
     private int serviceTime;
     private int excutedTime;
     private double priority;
-    private boolean isComeFirst;
+    private boolean isComeFirst;       // Checks who came first when two processes come at the same time
     private int processWaitTime;
     
     public AProcess(String name,int arrivalTime,int serviceTime){
@@ -20,7 +20,8 @@ public class AProcess {
         
     }
     
-
+// Getters and setters.......................................
+    
     /**
      * @return the name
      */
