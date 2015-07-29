@@ -9,7 +9,7 @@ public class Schedular {
     private ReadyQueue readyQueue;
     private int currentTime;
     private AProcess next;
-    private int pTime;
+    private int pTime;                       // The time that a process is able to access the processor at a single time
     
     
     public Schedular(ArrayList<AProcess> processList){
@@ -23,22 +23,24 @@ public class Schedular {
         this.next = null;
     }
     
+    // The Highest Response Ratio Next Algorithm .............................................
+    
     public AProcess hrrn(){
         if(this.getReadyQueue().size()!=0){
-            next = this.getReadyQueue().remove();
+            next = this.getReadyQueue().remove();        // Getting the first process from the ready queue
             this.currentTime+=next.getServiceTime();
             next.setExcutedTime(next.getServiceTime());
 
-            for(AProcess p:this.newProcessList){
+            for(AProcess p:this.newProcessList){                   //Checking for the suitable processes to add to ready queue
                 if(p.getArrivalTime()<=this.getCurrentTime()){                
                     this.getReadyQueue().add(p);         
                 }
             }
-            for(AProcess p:this.getReadyQueue()){
+            for(AProcess p:this.getReadyQueue()){                  // Set the priorities according to response ratio
                 p.setPriority(giveRatio(p, this.getCurrentTime()));            
                 this.newProcessList.remove(p);            
             }
-         }else{            
+         }else{                // When the ready queue is empty...
             int count = 0;
             while(true){
                 this.currentTime++;     
@@ -48,9 +50,9 @@ public class Schedular {
                 for(AProcess p:this.newProcessList){                   
                     if(p.getArrivalTime()<=this.getCurrentTime()){ 
                         p.setProcessWaitTime(count);
-                        this.getReadyQueue().add(p);
+                        this.getReadyQueue().add(p);                // Removing the process fro process queue and adding it to the ready queue
                         this.newProcessList.remove(p);
-                        return hrrn();                    
+                        return hrrn();                     // Calling the method again for the non-empty ready queue  
                     }
                 }                
             }
@@ -58,20 +60,22 @@ public class Schedular {
         return next;
     }    
      
+     // The Highest Response Ratio Next preemptive algorithm....................................
+    
     public AProcess hrrnPree(){
         if(this.getReadyQueue().size()!=0){ 
             next = this.getReadyQueue().remove();
             this.currentTime+=pTime;
             next.setExcutedTime(next.getExcutedTime()+pTime);      
 
-            for(AProcess p:this.newProcessList){
+            for(AProcess p:this.newProcessList){                     //Checking for the suitable processes to add to ready queue
                 if(p.getArrivalTime()<=this.getCurrentTime()){                 
                     this.getReadyQueue().add(p);         
                 }
             }
             for(AProcess p:this.getReadyQueue()){
                 p.setIsComeFirst(true);
-                p.setPriority(giveRatioPree(p, this.getCurrentTime()));            
+                p.setPriority(giveRatioPree(p, this.getCurrentTime()));           // Set priority to each process 
                 this.newProcessList.remove(p);            
             }
 
@@ -83,7 +87,7 @@ public class Schedular {
             }
 
             return next;
-       }else{          
+       }else{                   // If the ready queue is empty..........
             int count = 0;
             while(true){
                 this.currentTime++;     
@@ -94,7 +98,7 @@ public class Schedular {
                     if(p.getArrivalTime()<=this.getCurrentTime()){ 
                         p.setProcessWaitTime(count);
                         this.getReadyQueue().add(p);
-                        this.newProcessList.remove(p);
+                        this.newProcessList.remove(p);         // Removing the process fro process queue and adding it to the ready queue
                         return hrrnPree();                    
                     }
                 }               
@@ -103,6 +107,8 @@ public class Schedular {
         }   
         return null;
     }   
+    
+    //  The Round Robin Algorithm.............................................
     
     public AProcess roundRobin(){        
         if(this.getReadyQueue().size()!=0){            
