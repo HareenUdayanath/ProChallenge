@@ -4,7 +4,9 @@
  */
 package gameplate;
 
+import PlayerRecords.Player;
 import gameplate.Controller;
+
 import gameplate.TicTacGame;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
@@ -25,15 +27,43 @@ import javax.swing.JOptionPane;
  */
 public class NetworkedGame extends javax.swing.JFrame {
 
+    /**
+     * @return the player1
+     */
+    public static Player getPlayer1() {
+        return player1;
+    }
+
+    /**
+     * @param aPlayer1 the player1 to set
+     */
+    public static void setPlayer1(Player aPlayer1) {
+        player1 = aPlayer1;
+    }
+
+    /**
+     * @return the player2
+     */
+    public static Player getPlayer2() {
+        return player2;
+    }
+
+    /**
+     * @param aPlayer2 the player2 to set
+     */
+    public static void setPlayer2(Player aPlayer2) {
+        player2 = aPlayer2;
+    }
+
     
     
     private Controller myController;   
     private ArrayList<Integer> rest;
     private int simbleList[][]; 
     private int count;
-    private static int p1Wins;
-    private static int p2Wins;
-    private static int total;
+ ;    
+    private static Player player1;
+    private static Player player2;
     private boolean isOtherFirst;
     private boolean isSingle;
     private NetworkedGame temp;
@@ -45,7 +75,8 @@ public class NetworkedGame extends javax.swing.JFrame {
     private static PrintWriter output = null;
     private static BufferedReader input = null;
     private static boolean isServer = false;
-    private static String serverIP;
+    private static String serverIP;    
+    
 
   
     
@@ -97,11 +128,11 @@ public class NetworkedGame extends javax.swing.JFrame {
             output = new PrintWriter(socket.getOutputStream(),true);
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException ex) {
-            System.out.println("asdasdasdasdasdasd");
+            
             return false;
             //Logger.getLogger(GameNetworked.class.getName()).log(Level.SEVERE, null, ex);
         }
-         System.out.println("asdasdasdasdasdasd");
+         
         return true;
     }
     
@@ -139,7 +170,7 @@ public class NetworkedGame extends javax.swing.JFrame {
         input = null;
         isServer = false;*/
         NetworkedGame.setCanClicked(true);
-        total++;
+        
         simbleList = new int[3][3];
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.addWindowListener(new WindowAdapter(){
@@ -150,12 +181,17 @@ public class NetworkedGame extends javax.swing.JFrame {
         });
         this.count = 2;     
         if(isServer)
-            this.setIsComFirst(false);
+            this.setIsOtherFirst(false);
         else
-            this.setIsComFirst(true);
+            this.setIsOtherFirst(true);
        
-        this.pLable1.setText(TicTacGame.getPlayer1()+" - "+String.valueOf(NetworkedGame.getP1Wins())+" Wins");
-        this.pLable2.setText(TicTacGame.getPlayer2()+" - "+String.valueOf(NetworkedGame.getP2Wins())+" Wins");
+        if(this.isOtherFirst)
+            this.tLable.setText(NetworkedGame.player2.getName()+"'s turn");
+        else
+            this.tLable.setText(NetworkedGame.player1.getName()+"'s turn");
+        
+        this.pLable1.setText(NetworkedGame.player1.getName()+" - "+NetworkedGame.player1.getWins()+" Wins");
+        this.pLable2.setText(NetworkedGame.player2.getName()+" - "+NetworkedGame.player2.getWins()+" Wins");
       
         this.sLable.setText("Two Player Game");
         
@@ -192,6 +228,18 @@ public class NetworkedGame extends javax.swing.JFrame {
             
         }
     
+    };
+    
+     private final WindowAdapter windowAdapter = new WindowAdapter() {
+
+        @Override
+        public void windowClosed(WindowEvent e) {
+            if(PlayerSelect.shouldSave){
+                TicTacGame.db.addPalyer(player1);
+                TicTacGame.db.addPalyer(player2);
+            }            
+        }
+        
     };
     
     public void setButtornColour(int button,int colour) {
@@ -248,16 +296,16 @@ public class NetworkedGame extends javax.swing.JFrame {
         }
     }
     
-   void buttonClicked(int but){        
+    void buttonClicked(int but){        
        
         if(rest.remove(Integer.valueOf(but))&&canClicked){
         
             if((!isIsOtherFirst()&&count%2==0)||(isIsOtherFirst()&&count%2!=0)){
                 doButton(but,true);             
-                this.tLable.setText(TicTacGame.getPlayer2()+"'s turn");
+                this.tLable.setText(NetworkedGame.player2.getName()+"'s turn");
             }else{
                 doButton(but,false);            
-                this.tLable.setText(TicTacGame.getPlayer1()+"'s turn");
+                this.tLable.setText(NetworkedGame.player2.getName()+"'s turn");
             }
 
             count++;        
@@ -275,8 +323,9 @@ public class NetworkedGame extends javax.swing.JFrame {
                             try {                              
                                 num = Integer.valueOf(input.readLine());
                             } catch (IOException ex) {
-                                //Logger.getLogger(GameNetworked.class.getName()).log(Level.SEVERE, null, ex);
-                                //this.dispose();
+                           
+                                JOptionPane.showMessageDialog(null,NetworkedGame.player1.getName()+" Other player has disconnected");
+                                temp.dispose();
                             }catch(NumberFormatException ex){
                                 temp.dispose();
                                 TicTacGame.setIsOtherFirst(false);
@@ -285,18 +334,22 @@ public class NetworkedGame extends javax.swing.JFrame {
 
                             if(num>-1){  
                                 doButton(num,false);                           
-                                //this.tLable.setText(TicTacGame.getPlayer1()+"'s turn");
+                                tLable.setText(NetworkedGame.player1.getName()+"'s turn");
                                 rest.remove(Integer.valueOf(num));                    
                                 count++;
                             }
 
                             if(myController.checher(simbleList)>-1){ 
                                 if(myController.checher(simbleList)==1){                            
-                                    JOptionPane.showMessageDialog(null,TicTacGame.getPlayer1()+" is Win..");
-                                    NetworkedGame.setP1Wins(NetworkedGame.getP1Wins()+1);
+                                    JOptionPane.showMessageDialog(null,NetworkedGame.player1.getName()+" is Win..");
+                                    
+                                    NetworkedGame.player1.setWins(1);
+                                    NetworkedGame.player2.setLosses(1);
                                 }else{
-                                    JOptionPane.showMessageDialog(null,TicTacGame.getPlayer2()+" is Win..");
-                                    NetworkedGame.setP2Wins(NetworkedGame.getP2Wins()+1);
+                                    JOptionPane.showMessageDialog(null,NetworkedGame.player2.getName()+" is Win..");
+                                    
+                                    NetworkedGame.player1.setWins(1);
+                                    NetworkedGame.player2.setLosses(1);
                                 }
                                 temp.dispose();
                                 int option = JOptionPane.showConfirmDialog(null, "Do you want a new Game..?", "New Game", JOptionPane.YES_NO_OPTION);
@@ -316,7 +369,7 @@ public class NetworkedGame extends javax.swing.JFrame {
                                     }
                                 }
                             }else if(count==11){            
-                                JOptionPane.showMessageDialog(null,TicTacGame.getPlayer1()+" and "+TicTacGame.getPlayer2()+" are even....");
+                                JOptionPane.showMessageDialog(null,NetworkedGame.player1.getName()+" and "+NetworkedGame.player2.getName()+" are even....");
                                 temp.dispose();            
                                 int option = JOptionPane.showConfirmDialog(null, "Do you want a new Game..?", "New Game", JOptionPane.YES_NO_OPTION);
                                 if(option==JOptionPane.OK_OPTION){
@@ -354,8 +407,8 @@ public class NetworkedGame extends javax.swing.JFrame {
                             try {                               
                                 num = Integer.valueOf(input.readLine());
                             } catch (IOException ex) {
-                                //Logger.getLogger(GameNetworked.class.getName()).log(Level.SEVERE, null, ex);
-                                //this.dispose();
+                                JOptionPane.showMessageDialog(null,NetworkedGame.player1.getName()+" Other player has disconnected");
+                                temp.dispose();
                             }catch(NumberFormatException ex){
                                 temp.dispose();
                                 TicTacGame.setIsOtherFirst(false);
@@ -364,17 +417,21 @@ public class NetworkedGame extends javax.swing.JFrame {
 
                             if(num>-1){   
                                 doButton(num,false);                           
-                                //this.tLable.setText(TicTacGame.getPlayer1()+"'s turn");
+                                tLable.setText(NetworkedGame.player1.getName()+"'s turn");
                                 rest.remove(Integer.valueOf(num));                    
                                 count++;
                             }
                              if(myController.checher(simbleList)>-1){ 
                                 if(myController.checher(simbleList)==1){                            
-                                    JOptionPane.showMessageDialog(null,TicTacGame.getPlayer1()+" is Win..");
-                                    NetworkedGame.setP1Wins(NetworkedGame.getP1Wins()+1);
+                                    JOptionPane.showMessageDialog(null,NetworkedGame.player1.getName()+" is Win..");
+                                   
+                                    NetworkedGame.player1.setWins(1);
+                                    NetworkedGame.player2.setLosses(1);
                                 }else{
-                                    JOptionPane.showMessageDialog(null,TicTacGame.getPlayer2()+" is Win..");
-                                    NetworkedGame.setP2Wins(NetworkedGame.getP2Wins()+1);
+                                    JOptionPane.showMessageDialog(null,NetworkedGame.player2.getName()+" is Win..");
+                                    
+                                    NetworkedGame.player2.setWins(1);
+                                    NetworkedGame.player1.setLosses(1);
                                 }
                                 temp.dispose();
                                 int option = JOptionPane.showConfirmDialog(null, "Do you want a new Game..?", "New Game", JOptionPane.YES_NO_OPTION);
@@ -396,7 +453,7 @@ public class NetworkedGame extends javax.swing.JFrame {
                                         NetworkedGame.closeConnection();
                                 }                            
                             }else if(count==11){            
-                                JOptionPane.showMessageDialog(null,TicTacGame.getPlayer1()+" and "+TicTacGame.getPlayer2()+" are even....");
+                                JOptionPane.showMessageDialog(null,NetworkedGame.player1.getName()+" and "+NetworkedGame.player2.getName()+" are even....");
                                 temp.dispose();            
                                 int option = JOptionPane.showConfirmDialog(null, "Do you want a new Game..?", "New Game", JOptionPane.YES_NO_OPTION);
                                 if(option==JOptionPane.YES_OPTION){
@@ -429,11 +486,15 @@ public class NetworkedGame extends javax.swing.JFrame {
             if(myController.checher(simbleList)>-1){ 
                 if(myController.checher(simbleList)==1){
                     //output.println("Won");
-                    JOptionPane.showMessageDialog(null,TicTacGame.getPlayer1()+" is Win..");
-                    NetworkedGame.setP1Wins(NetworkedGame.getP1Wins()+1);
+                    JOptionPane.showMessageDialog(null,NetworkedGame.player1.getName()+" is Win..");
+                    
+                    NetworkedGame.player1.setWins(1);
+                    NetworkedGame.player2.setLosses(1);
                 }else{
-                    JOptionPane.showMessageDialog(null,TicTacGame.getPlayer2()+" is Win..");
-                    NetworkedGame.setP2Wins(NetworkedGame.getP2Wins()+1);
+                    JOptionPane.showMessageDialog(null,NetworkedGame.player2.getName()+" is Win..");
+                    
+                    NetworkedGame.player2.setWins(1);
+                    NetworkedGame.player1.setLosses(1);
                 }
                 this.dispose();
                 int option = JOptionPane.showConfirmDialog(null, "Do you want a new Game..?", "New Game", JOptionPane.YES_NO_OPTION);
@@ -446,7 +507,7 @@ public class NetworkedGame extends javax.swing.JFrame {
                     NetworkedGame.closeConnection();
                 }
             }else if(count==11){            
-                JOptionPane.showMessageDialog(null,TicTacGame.getPlayer1()+" and "+TicTacGame.getPlayer2()+" are even....");
+                JOptionPane.showMessageDialog(null,NetworkedGame.player1.getName()+" and "+NetworkedGame.player2.getName()+" are even....");
                 this.dispose();            
                 int option = JOptionPane.showConfirmDialog(null, "Do you want a new Game..?", "New Game", JOptionPane.YES_NO_OPTION);
                 if(option==JOptionPane.YES_OPTION){
@@ -461,10 +522,9 @@ public class NetworkedGame extends javax.swing.JFrame {
         }
     } 
     
-    public void comStart(){   
+    public void startTheOtherPlayer(){   
         NetworkedGame.setCanClicked(false);
-        int num = -1;      
-        System.out.println("B");
+        int num = -1;  
         try {               
             num = Integer.valueOf(input.readLine());
         }catch(IOException ex) {           
@@ -614,8 +674,6 @@ public class NetworkedGame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void NewGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewGActionPerformed
-        NetworkedGame.setP1Wins(0);
-        NetworkedGame.setP2Wins(0);
         new PlayerSelect().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_NewGActionPerformed
@@ -673,12 +731,6 @@ public class NetworkedGame extends javax.swing.JFrame {
     // Getters and seters...................................................
     
     
-    /**
-     * @param isComFirst the isComFirst to set
-     */
-    public void setIsComFirst(boolean isComFirst) {
-        this.setIsOtherFirst(isComFirst);
-    }
 
     /**
      * @param isSingle the isSingle to set
@@ -722,20 +774,7 @@ public class NetworkedGame extends javax.swing.JFrame {
         return serverIP;
     }
 
-    /**
-     * @return the totGames
-     */
-    public static int getTotal() {
-        return total;
-    }
-    
-    /**
-     * @param aTotal the total to set
-     */
-    public static void setTotal(int aTotal) {
-        total = aTotal;
-    }
-
+   
     /**
      * @return the plate
      */
@@ -759,33 +798,7 @@ public class NetworkedGame extends javax.swing.JFrame {
     
     
 
-    /**
-     * @return the p1Wins
-     */
-    public static int getP1Wins() {
-        return p1Wins;
-    }
-
-    /**
-     * @param aP1Wins the p1Wins to set
-     */
-    public static void setP1Wins(int aP1Wins) {
-        p1Wins = aP1Wins;
-    }
-
-    /**
-     * @return the p2Wins
-     */
-    public static int getP2Wins() {
-        return p2Wins;
-    }
-
-    /**
-     * @param aP2Wins the p2Wins to set
-     */
-    public static void setP2Wins(int aP2Wins) {
-        p2Wins = aP2Wins;
-    }  
+ 
 
    
 }

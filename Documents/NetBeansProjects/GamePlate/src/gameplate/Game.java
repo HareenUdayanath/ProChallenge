@@ -6,6 +6,8 @@ import gameplate.TicTacGame;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.JOptionPane;
@@ -16,29 +18,29 @@ public class Game extends javax.swing.JFrame {
     /**
      * @return the p1
      */
-    public static Player getP1() {
-        return p1;
+    public static Player getPlayer1() {
+        return player1;
     }
 
     /**
      * @param aP1 the p1 to set
      */
-    public static void setP1(Player aP1) {
-        p1 = aP1;
+    public static void setPlayer1(Player aP1) {
+        player1 = aP1;
     }
 
     /**
      * @return the p2
      */
-    public static Player getP2() {
-        return p2;
+    public static Player getPlayer2() {
+        return player2;
     }
 
     /**
      * @param aP2 the p2 to set
      */
-    public static void setP2(Player aP2) {
-        p2 = aP2;
+    public static void setPlayer2(Player aP2) {
+        player2 = aP2;
     }
 
    
@@ -49,61 +51,18 @@ public class Game extends javax.swing.JFrame {
     private int simbleList[][];    
     private ArrayList<Integer> rest;
     private int difficulty;
-    private int count;
-    private static int p1Wins;
-    private static int p2Wins;
-    private static int total;
-    private static Player p1;
-    private static Player p2;
+    private int count;   
+    private static Player player1;
+    private static Player player2;
     private boolean isComFirst;
     private boolean isSingle;
     private Plate plate;
     public Plate background;
-  
+    public static int num;
+    
     
 
-     /**
-     * @return the totGames
-     */
-    public static int getTotal() {
-        return total;
-    }
-    
-     /**
-     * @param aTotal the total to set
-     */
-    public static void setTotal(int aTotal) {
-        total = aTotal;
-    }
-    
-    /**
-     * @return the p1Wins
-     */
-    public static int getP1Wins() {
-        return p1Wins;
-    }
-
-    /**
-     * @param aP1Wins the p1Wins to set
-     */
-    public static void setP1Wins(int aP1Wins) {
-        p1Wins = aP1Wins;
-    }
-
-    /**
-     * @return the p2Wins
-     */
-    public static int getP2Wins() {
-        return p2Wins;
-    }
-
-    /**
-     * @param aP2Wins the p2Wins to set
-     */
-    public static void setP2Wins(int aP2Wins) {
-        p2Wins = aP2Wins;
-    }   
-  
+   
 
     /**
      * Creates new form Frame
@@ -112,9 +71,14 @@ public class Game extends javax.swing.JFrame {
         initComponents();
         setBackground(Color.WHITE);
         init();
+        if(isComFirst)
+            this.tLable.setText(Game.player2.getName()+"'s turn");
+        else
+            this.tLable.setText(Game.player1.getName()+"'s turn");
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         this.setBounds(400, 100,this.getWidth(), this.getHeight());
         System.out.println(this.getWidth()+" "+this.getHeight());
+        this.addWindowListener(windowAdapter);
         this.setResizable(false);
     }
     void init(){   
@@ -127,22 +91,19 @@ public class Game extends javax.swing.JFrame {
         background.drawImage("back");*/
         
         //...........................
-        this.count = 2; 
-        setTotal(getTotal() + 1);
-        System.out.println(getTotal());
+        this.count = 2;      
         simbleList = new int[3][3];
         this.setIsComFirst(false);    
-        this.pLable1.setText(TicTacGame.getPlayer1()+" - "+String.valueOf(Game.getP1Wins())+" Wins");
-        this.pLable2.setText(TicTacGame.getPlayer2()+" - "+String.valueOf(Game.getP2Wins())+" Wins");
+        
+        this.pLable1.setText(Game.player1.getName()+" - "+Game.player1.getWins()+" Wins");
+        this.pLable2.setText(Game.player2.getName()+" - "+Game.player2.getWins()+" Wins");
       
         if(TicTacGame.isIsSingle()){
             this.sLable.setText("Single Player Game");
         }else{
             this.sLable.setText("Two Player Game");
         }
-        
-        this.cB1.setBackground(Color.BLUE);
-        this.cB2.setBackground(Color.RED);     
+       
         
         rest = new ArrayList<>();
         for(int i=1;i<10;i++){
@@ -174,6 +135,18 @@ public class Game extends javax.swing.JFrame {
             
         }
     
+    };
+    
+    private final WindowAdapter windowAdapter = new WindowAdapter() {
+
+        @Override
+        public void windowClosed(WindowEvent e) {
+            if(PlayerSelect.shouldSave){
+                TicTacGame.db.addPalyer(player1);
+                TicTacGame.db.addPalyer(player2);
+            }            
+        }
+        
     };
     
     public void setButtornColour(int button,int colour) {
@@ -234,27 +207,27 @@ public class Game extends javax.swing.JFrame {
                 if(!isComFirst){
                     if(count%2==0){
                         doButton(but,true);                  
-                        this.tLable.setText(TicTacGame.getPlayer2()+"'s turn");
+                        this.tLable.setText(Game.player2.getName()+"'s turn");
                     }else{
                         doButton(but,false);                    
-                        this.tLable.setText(TicTacGame.getPlayer1()+"'s turn");
+                        this.tLable.setText(Game.player1.getName()+"'s turn");
                     }
                 }else{
                     if(count%2!=0){
                         doButton(but,true);                   
-                        this.tLable.setText(TicTacGame.getPlayer2()+"'s turn");
+                        this.tLable.setText(Game.player2.getName()+"'s turn");
                     }else{
                         doButton(but,false);                  
-                        this.tLable.setText(TicTacGame.getPlayer1()+"'s turn");
+                        this.tLable.setText(Game.player1.getName()+"'s turn");
                     }
                 }
             }else{
                 if((!isComFirst&&count%2==0)||(isComFirst&&count%2!=0)){
-                    doButton(but,true);              
-                    this.tLable.setText(TicTacGame.getPlayer2()+"'s turn");
+                    doButton(but,true);                       
+                    this.tLable.setText(Game.player2.getName()+"'s turn");
                 }else{
                     doButton(but,false);              
-                    this.tLable.setText(TicTacGame.getPlayer1()+"'s turn");
+                    this.tLable.setText(Game.player2.getName()+"'s turn");
                 }
             }      
             count++;     
@@ -262,7 +235,7 @@ public class Game extends javax.swing.JFrame {
             if((myController.checher(simbleList)==-1)&&isSingle&&!isComFirst){
                 if(count<11){
 
-                    int num;
+                    //int num;
                     if(difficulty == 3)
                         num = myController.impossible1(simbleList,rest,but,count);  
                     else if(difficulty == 2)
@@ -271,23 +244,24 @@ public class Game extends javax.swing.JFrame {
                         num = myController.easy(rest);
 
                     if(num>-1){ 
-                        plate.setEnabled(false);
+                        plate.setEnabled(false);  
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(2000);
                             plate.setEnabled(true);
                         } catch (InterruptedException ex) {
                             plate.setEnabled(true);
                         }
-                        doButton(num,false);                 
-                        this.tLable.setText(TicTacGame.getPlayer1()+"'s turn");
+
+                        doButton(num,false);  
+                        tLable.setText(Game.player1.getName()+"'s turn");
                         rest.remove(Integer.valueOf(num));                    
                         count++;
+                              
                     }
                 }
             }else if((myController.checher(simbleList)==-1)&&isSingle&&isComFirst){
                 if(count<11){
-
-                    int num;
+                   
                     if(difficulty == 3)
                         num = myController.impossible2(simbleList,rest,but,count);  
                     else if(difficulty == 2)
@@ -298,29 +272,31 @@ public class Game extends javax.swing.JFrame {
                     if(num>-1){ 
                         plate.setEnabled(false);
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(2000);
                             plate.setEnabled(true);
                         } catch (InterruptedException ex) {
                             plate.setEnabled(true);
                         }
-                        doButton(num,false);                   
-                        this.tLable.setText(TicTacGame.getPlayer1()+"'s turn");
+
+                        doButton(num,false);  
+                        tLable.setText(Game.player1.getName()+"'s turn");
                         rest.remove(Integer.valueOf(num));                    
                         count++;
+                                  
                     }
                 }
             }
             if(myController.checher(simbleList)>-1){ 
                 if(myController.checher(simbleList)==1){
-                    JOptionPane.showMessageDialog(null,TicTacGame.getPlayer1()+" is Win..");
-                    Game.setP1Wins(Game.getP1Wins()+1);
-                    Game.p1.setWins(1);
-                    Game.p2.setLosses(1);
+                    JOptionPane.showMessageDialog(null,Game.player1.getName()+" is Win..");
+                   
+                    Game.player1.setWins(1);
+                    Game.player2.setLosses(1);
                 }else{
-                    JOptionPane.showMessageDialog(null,TicTacGame.getPlayer2()+" is Win..");
-                    Game.setP2Wins(Game.getP2Wins()+1);
-                    Game.p2.setWins(1);
-                    Game.p1.setLosses(1);
+                    JOptionPane.showMessageDialog(null,Game.player2.getName()+" is Win..");
+                    
+                    Game.player2.setWins(1);
+                    Game.player1.setLosses(1);
                 }            
                 int option = JOptionPane.showConfirmDialog(null, "Do you want a new Game..?", "New Game", JOptionPane.YES_NO_OPTION);
                 if(option==JOptionPane.OK_OPTION){
@@ -340,9 +316,9 @@ public class Game extends javax.swing.JFrame {
                 }
                 this.dispose();
             }else if(count==11){            
-                JOptionPane.showMessageDialog(null,TicTacGame.getPlayer1()+" and "+TicTacGame.getPlayer2()+" are even....");
-                Game.p1.setTies(1);
-                Game.p2.setTies(1);
+                JOptionPane.showMessageDialog(null,Game.player1.getName()+" and "+Game.player2.getName()+" are even....");
+                Game.player1.setTies(1);
+                Game.player2.setTies(1);
                 int option = JOptionPane.showConfirmDialog(null, "Do you want a new Game..?", "New Game", JOptionPane.YES_NO_OPTION);
                 if(option==JOptionPane.OK_OPTION){
                     if(TicTacGame.isIsOtherFirst()){
@@ -365,10 +341,26 @@ public class Game extends javax.swing.JFrame {
     } 
     
     public void comStart(){
-        if(difficulty==3){             
-            doButton(5,false);          
-            rest.remove(Integer.valueOf(5));  
-            count++;
+        if(difficulty==3){   
+            plate.setEnabled(false);                   
+            tLable.setText(Game.player2.getName()+"'s turn");
+            new Thread(){
+                public void run(){
+
+                    try {
+                        Thread.sleep(2000);
+                        plate.setEnabled(true);
+                    } catch (InterruptedException ex) {
+                        plate.setEnabled(true);
+                    }
+
+                    doButton(5,false);  
+                    tLable.setText(Game.player1.getName()+"'s turn");
+                    rest.remove(Integer.valueOf(5));                    
+                    count++;
+                }
+            }.start();   
+            
         }else if(difficulty==2){ 
             Random randomCreater = new Random();
             int arr[] = {1,3,9,7,5};         
@@ -393,13 +385,11 @@ public class Game extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        cB1 = new javax.swing.JButton();
         pLable1 = new javax.swing.JLabel();
-        cB2 = new javax.swing.JButton();
         pLable2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        sLable = new javax.swing.JLabel();
         tLable = new javax.swing.JLabel();
+        sLable = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -408,11 +398,9 @@ public class Game extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
 
-        cB1.setEnabled(false);
+        jPanel1.setBackground(new java.awt.Color(0, 153, 153));
 
         pLable1.setText("jLabel1");
-
-        cB2.setEnabled(false);
 
         pLable2.setText("jLabel1");
 
@@ -420,56 +408,49 @@ public class Game extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(20, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(cB1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cB2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pLable1)
                     .addComponent(pLable2))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(cB1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(pLable1)
-                        .addGap(9, 9, 9)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pLable2)
-                    .addComponent(cB2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addComponent(pLable1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pLable2)
+                .addGap(33, 33, 33))
         );
 
-        sLable.setFont(new java.awt.Font("Trebuchet MS", 0, 11)); // NOI18N
-        sLable.setText("jLabel1");
+        jPanel2.setBackground(new java.awt.Color(0, 153, 153));
 
         tLable.setText("jLabel1");
+
+        sLable.setBackground(new java.awt.Color(51, 51, 0));
+        sLable.setFont(new java.awt.Font("Trajan Pro", 3, 11)); // NOI18N
+        sLable.setText("jLabel1");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tLable)
-                    .addComponent(sLable))
-                .addContainerGap(95, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(tLable))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(118, 118, 118)
+                        .addComponent(sLable)))
+                .addContainerGap(152, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(sLable)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(9, 9, 9)
                 .addComponent(tLable)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -496,22 +477,19 @@ public class Game extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(61, 61, 61)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(159, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 336, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 387, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -558,8 +536,6 @@ public class Game extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton cB1;
-    private javax.swing.JButton cB2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;

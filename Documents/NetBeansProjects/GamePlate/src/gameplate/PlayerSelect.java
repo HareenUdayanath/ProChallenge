@@ -6,8 +6,10 @@ package gameplate;
 
 //import static gameplate.TicTacGame.newNetGame;
 
+import PlayerRecords.MyTableModel;
 import PlayerRecords.Player;
-import gameplate.TicTacGame;
+import PlayerRecords.PlayerRecord;
+
 
 
 
@@ -19,6 +21,7 @@ public class PlayerSelect extends javax.swing.JFrame {
     private boolean isOnePlayer;
     private static String ip;
     private static PlayerSelect temp;
+    public static boolean shouldSave=false;
 
     /**
      * Creates new form NewGame
@@ -56,10 +59,11 @@ public class PlayerSelect extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        start = new javax.swing.JButton();
         tP1 = new javax.swing.JComboBox();
         tP2 = new javax.swing.JComboBox();
         jCheckBox1 = new javax.swing.JCheckBox();
+        jButton2 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         serButton = new javax.swing.JButton();
@@ -115,10 +119,10 @@ public class PlayerSelect extends javax.swing.JFrame {
             .addGap(0, 20, Short.MAX_VALUE)
         );
 
-        jButton1.setText("OK");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        start.setText("Start");
+        start.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                startActionPerformed(evt);
             }
         });
 
@@ -135,6 +139,13 @@ public class PlayerSelect extends javax.swing.JFrame {
             }
         });
 
+        jButton2.setText("Show Records");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -145,12 +156,12 @@ public class PlayerSelect extends javax.swing.JFrame {
                     .addComponent(jRadioButton1)
                     .addComponent(jRadioButton2)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(start, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(33, 33, 33)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(tP1, 0, 146, Short.MAX_VALUE)
@@ -159,8 +170,11 @@ public class PlayerSelect extends javax.swing.JFrame {
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addComponent(jCheckBox1))))
-                .addContainerGap(46, Short.MAX_VALUE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jCheckBox1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                                .addComponent(jButton2)))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -182,12 +196,14 @@ public class PlayerSelect extends javax.swing.JFrame {
                             .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1))
+                        .addComponent(start))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(tP2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jCheckBox1)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jCheckBox1)
+                            .addComponent(jButton2))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -233,7 +249,7 @@ public class PlayerSelect extends javax.swing.JFrame {
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(serButton, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(getIP, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE))
+                        .addComponent(getIP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(conButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -262,9 +278,9 @@ public class PlayerSelect extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -282,7 +298,9 @@ public class PlayerSelect extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -304,32 +322,49 @@ public class PlayerSelect extends javax.swing.JFrame {
         TicTacGame.setIsSingle(false);
     }//GEN-LAST:event_jRadioButton2ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void startActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startActionPerformed
        
-        Game.setP1(new Player(tP1.getEditor().getItem().toString()));
-        Game.setP1(new Player(tP2.getEditor().getItem().toString()));
+        String p1Name = tP1.getEditor().getItem().toString();
+        String p2Name = tP2.getEditor().getItem().toString();
+        if(TicTacGame.db.isPlayerIn(p1Name)){            
+            Game.setPlayer1(TicTacGame.db.loadAPlayer(p1Name));
+        }else{
+            Game.setPlayer1(new Player(p1Name));
+        }
+        if(TicTacGame.db.isPlayerIn(p2Name)){            
+            Game.setPlayer2(TicTacGame.db.loadAPlayer(p2Name));
+        }else{
+            Game.setPlayer2(new Player(p2Name));
+        }   
         
-        TicTacGame.setPlayer1(tP1.getEditor().getItem().toString());
-        TicTacGame.setPlayer2(tP2.getEditor().getItem().toString());
+       
         if(isOnePlayer){
-            new Difficulty().setVisible(true);
+            new Difficulty(this.getX(),this.getY()).setVisible(true);
         }else{       
              new Thread(){
-                public void run(){
-                    Game.setP1Wins(0);
-                    Game.setP2Wins(0);
+                public void run(){                   
                     TicTacGame.newGame(false); 
                 }
             }.start();                      
         }
         this.dispose();        
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_startActionPerformed
 
     private void serButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serButtonActionPerformed
-        TicTacGame.setPlayer1(tP1.getEditor().getItem().toString());
-        TicTacGame.setPlayer2(tP2.getEditor().getItem().toString());
-        NetworkedGame.setP1Wins(0);
-        NetworkedGame.setP2Wins(0);
+      
+        String p1Name = tP1.getEditor().getItem().toString();
+        String p2Name = tP2.getEditor().getItem().toString();
+        if(TicTacGame.db.isPlayerIn(p1Name)){            
+            NetworkedGame.setPlayer1(TicTacGame.db.loadAPlayer(p1Name));
+        }else{
+            NetworkedGame.setPlayer1(new Player(p1Name));
+        }
+        if(TicTacGame.db.isPlayerIn(p2Name)){            
+            NetworkedGame.setPlayer2(TicTacGame.db.loadAPlayer(p2Name));
+        }else{
+            NetworkedGame.setPlayer2(new Player(p2Name));
+        }         
+        
         if(NetworkedGame.startSerrver(10007)){
             this.getIP.setText(NetworkedGame.getServerIP());
             this.setIP.setEditable(false);
@@ -350,10 +385,19 @@ public class PlayerSelect extends javax.swing.JFrame {
     private void conButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_conButtonActionPerformed
         ip = this.setIP.getText();
         System.out.println(ip);
-        TicTacGame.setPlayer1(tP1.getEditor().getItem().toString());
-        TicTacGame.setPlayer2(tP2.getEditor().getItem().toString());
-        NetworkedGame.setP1Wins(0);
-        NetworkedGame.setP2Wins(0); 
+       
+        String p1Name = tP1.getEditor().getItem().toString();
+        String p2Name = tP2.getEditor().getItem().toString();
+        if(TicTacGame.db.isPlayerIn(p1Name)){            
+            NetworkedGame.setPlayer1(TicTacGame.db.loadAPlayer(p1Name));
+        }else{
+            NetworkedGame.setPlayer1(new Player(p1Name));
+        }
+        if(TicTacGame.db.isPlayerIn(p2Name)){            
+            NetworkedGame.setPlayer2(TicTacGame.db.loadAPlayer(p2Name));
+        }else{
+            NetworkedGame.setPlayer2(new Player(p2Name));
+        }     
         Thread t = new Thread(){
             public void run(){
                 if(NetworkedGame.connect(PlayerSelect.ip,10007)){                    
@@ -373,11 +417,18 @@ public class PlayerSelect extends javax.swing.JFrame {
         if(jCheckBox1.isSelected()){
             tP1.setModel(new SearchBoxModel(tP1));
             tP2.setModel(new SearchBoxModel(tP2));
+            shouldSave = true;
         }else{
             tP1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Player1" }));   
             tP2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Player2" }));
+            shouldSave = false;
         }
     }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        
+        new PlayerRecord(new MyTableModel()).setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -417,7 +468,7 @@ public class PlayerSelect extends javax.swing.JFrame {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton conButton;
     private javax.swing.JLabel getIP;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -431,6 +482,7 @@ public class PlayerSelect extends javax.swing.JFrame {
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JButton serButton;
     private javax.swing.JTextField setIP;
+    private javax.swing.JButton start;
     private javax.swing.JComboBox tP1;
     private javax.swing.JComboBox tP2;
     // End of variables declaration//GEN-END:variables

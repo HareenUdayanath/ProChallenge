@@ -1,9 +1,6 @@
 package gameplate;
 
 import PlayerRecords.DataBase;
-import PlayerRecords.PlayerRecord;
-import javax.swing.JFrame;
-
 
 public class TicTacGame {
     
@@ -11,8 +8,7 @@ public class TicTacGame {
     private static boolean isSingle;
     private static Controller controller;
     private static int difficulty;
-    private static String player1;
-    private static String player2;
+ 
     private static Game game;
     private static NetworkedGame networkedGame;
     public static DataBase db;
@@ -23,19 +19,17 @@ public class TicTacGame {
     public static void main(String[] args) {
        db = new DataBase();
        start();
+       //db.deletePlayer("Player1");
+       //db.deletePlayer("Player2");
+        //System.out.println(db.loadAPlayer("Player1").getName()); 
        //new PlayerRecord().setVisible(true);
        
        
     }
     public static void start(){
         controller = new Controller(); 
-        isOtherFirst = false;
-        Game.setP1Wins(0);
-        Game.setP2Wins(0);
-        Game.setTotal(0);
-        NetworkedGame.setP1Wins(0);
-        NetworkedGame.setP2Wins(0);
-        NetworkedGame.setTotal(0);
+        isOtherFirst = false;      
+       
         new PlayerSelect().setVisible(true); 
     
     }
@@ -57,7 +51,7 @@ public class TicTacGame {
         
         
         game.setVisible(true);
-        p.drawImage("BB.jpg");
+        p.drawImage("BB.png");
         p.drawBoard();   
         
         new Thread(){
@@ -69,8 +63,7 @@ public class TicTacGame {
         }.start(); 
     }
     static void newNetGame(boolean isCF){
-        networkedGame = new NetworkedGame();         
-         //networkedGame.setVisible(true);
+        networkedGame = new NetworkedGame();       
         Plate p = new Plate();
         p.setBounds(0,0, networkedGame.getWidth(),networkedGame.getHeight()); 
         p.addMouseListener(networkedGame.getMouseAdapter());
@@ -86,12 +79,12 @@ public class TicTacGame {
         
         networkedGame.setVisible(true);
         
-        p.drawImage("B.jpg");        
+        p.drawImage("B.png");        
         p.drawBoard(); 
         if(isIsOtherFirst()&&isIsSingle()){              
             new Thread(){
                 public void run(){
-                    networkedGame.comStart();
+                    networkedGame.startTheOtherPlayer();
                 }
             }.start();
         }
@@ -110,34 +103,6 @@ public class TicTacGame {
      */
     public static void setDifficulty(int aDifficulty) {
         difficulty = aDifficulty;
-    }
-
-    /**
-     * @return the player1
-     */
-    public static String getPlayer1() {
-        return player1;
-    }
-
-    /**
-     * @param aPlayer1 the player1 to set
-     */
-    public static void setPlayer1(String aPlayer1) {        
-        player1 = aPlayer1;
-    }
-
-    /**
-     * @return the player2
-     */
-    public static String getPlayer2() {
-        return player2;
-    }
-
-    /**
-     * @param aPlayer2 the player2 to set
-     */
-    public static void setPlayer2(String aPlayer2) {
-        player2 = aPlayer2;
     }
 
     /**

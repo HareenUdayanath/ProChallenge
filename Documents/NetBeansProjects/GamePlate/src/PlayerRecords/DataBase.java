@@ -25,32 +25,57 @@ public class DataBase {
             con.close();
         } catch (ClassNotFoundException ex) {
             //.getLogger(LocalDB.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("fffff");
         } catch (SQLException ex) {
             //Logger.getLogger(LocalDB.class.getName()).log(Level.SEVERE, null, ex);
-        } catch(Exception e){}
+            System.out.println("fffffsql");
+        } catch(Exception e){
+            System.out.println("fffff");
+        }
              
     }
      
     public boolean addPalyer(Player player){
         boolean result = false; 
-        try{
-
-            Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-            con = DriverManager.getConnection(url, user, password);               
-            pst = con.prepareStatement("INSERT INTO Players VALUES(?,?,?,?,?)");               
-            pst.setString(1,player.getName());
-            pst.setInt(2,player.getWins());
-            pst.setInt(3,player.getLosses());
-            pst.setInt(4,player.getTies());          
-            pst.executeUpdate();
-            con.close();
-            result = true;
+        System.out.println("AA");
+        if(isPlayerIn(player.getName())){
+            System.out.println("BB");
+            try{
+                Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+                con = DriverManager.getConnection(url, user, password);               
+                pst = con.prepareStatement("UPDATE Players SET Wins = ?,Losses = ?,Ties = ? WHERE Name = ?");             
+                pst.setInt(1,player.getWins());
+                pst.setInt(2,player.getLosses());
+                pst.setInt(3,player.getTies());    
+                pst.setString(4,player.getName());
+                pst.executeUpdate();
+                con.close();
+                result = true;
             
-        }catch(SQLException ex){
-            //System.out.println("ddasdasdasd");
-        } catch (ClassNotFoundException ex) {               
-            //Logger.getLogger(DBOperations.class.getName()).log(Level.SEVERE, null, ex);  
-        }
+            }catch(SQLException ex){
+                System.out.println("EXBBSQ");
+            } catch (ClassNotFoundException ex) {               
+               System.out.println("EXBB");
+            }
+        }else{
+            System.out.println("CC");
+            try{
+                Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+                con = DriverManager.getConnection(url, user, password);               
+                pst = con.prepareStatement("INSERT INTO Players VALUES(?,?,?,?)");               
+                pst.setString(1,player.getName());
+                pst.setInt(2,player.getWins());
+                pst.setInt(3,player.getLosses());
+                pst.setInt(4,player.getTies());          
+                pst.executeUpdate();
+                con.close();
+                result = true;            
+            }catch(SQLException ex){
+                System.out.println("EXCBBSQI");
+            } catch (ClassNotFoundException ex) {               
+               System.out.println("EXCBB");
+            }        
+        }        
         return result;
     }
     public boolean deletePlayer(String name){
@@ -97,16 +122,46 @@ public class DataBase {
             use = pst.executeQuery();
             while(use.next()){
                 if(use.getString(1).equals(name))
-                    result = true;            }
+                    result = true;            
+            }
             con.close();           
         }catch(SQLException ex){
-            result = true;
+            //result = true;
             //System.out.println("ddasdasdasd");
         } catch (ClassNotFoundException ex) {               
-            result = true;
+            //result = true;
             //Logger.getLogger(DBOperations.class.getName()).log(Level.SEVERE, null, ex);  
         }
         return result;
+    }
+    public Player loadAPlayer(String name){
+        Player player;
+        try{
+            System.out.println("dddd");   
+            Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+            con = DriverManager.getConnection(url, user, password);               
+            pst = con.prepareStatement("SELECT * FROM Players");              
+            use = pst.executeQuery();                
+            //System.out.println("dddd");            
+            while(use.next()){       
+                
+                if(use.getString(1).equals(name)){
+                    player = new Player(use.getString(1));               
+                    player.setWins(use.getInt(2));
+                    player.setLosses(use.getInt(3));
+                    player.setTies(use.getInt(4)); 
+                    con.close();
+                    return player;
+                }
+                
+            }        
+            con.close();
+        }catch(SQLException ex){
+            System.out.println("ssss");
+        } catch (ClassNotFoundException ex) {
+            
+        }
+        return null;
     }
         
 }

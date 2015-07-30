@@ -1,14 +1,17 @@
 package gameplate;
 
-import gameplate.TicTacGame;
-
 public class Difficulty extends javax.swing.JFrame {
 
     /**
      * Creates new form Difficulty
      */
-    public Difficulty() {
+    public Difficulty(int x,int y) {
+       
         initComponents();
+        buttonGroup1.add(easyV);
+        buttonGroup1.add(hardV);
+        buttonGroup1.add(normalV);
+        this.setBounds(x+20, y+20,this.getWidth(),this.getHeight());
     }
 
     /**
@@ -20,6 +23,7 @@ public class Difficulty extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         easyV = new javax.swing.JRadioButton();
@@ -135,51 +139,17 @@ public class Difficulty extends javax.swing.JFrame {
     }//GEN-LAST:event_hardVActionPerformed
 
     private void okButActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButActionPerformed
+        
         new Thread(){
-            public void run(){
-                Game.setP1Wins(0);
-                Game.setP2Wins(0);
+            public void run(){                
                 TicTacGame.newGame(false); 
             }
         }.start(); 
         this.dispose();
     }//GEN-LAST:event_okButActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Difficulty.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Difficulty.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Difficulty.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Difficulty.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Difficulty().setVisible(true);
-            }
-        });
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JRadioButton easyV;
     private javax.swing.JRadioButton hardV;
     private javax.swing.JPanel jPanel1;

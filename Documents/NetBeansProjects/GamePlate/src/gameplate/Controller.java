@@ -31,20 +31,17 @@ public class Controller {
             setPlayerFirstBut(5);
             int arr[] = {1,3,7,9};           
             return arr[randomCreater.nextInt(4)];
-        }else if((button==1||button==9)&&count==5&&playerFirstBut==5){
-           
+        }else if((button==1||button==9)&&count==5&&playerFirstBut==5){           
             int arr[] = {7,3};
             return arr[randomCreater.nextInt(2)];
-        }else if((button==3||button==7)&&count==5&&playerFirstBut==5){
-                       
+        }else if((button==3||button==7)&&count==5&&playerFirstBut==5){                       
             int arr[] = {1,9};
             return arr[randomCreater.nextInt(2)];
         }else if(count==9&&playerFirstBut==5){
             return randomGiver(rest);
         }
         
-        if((button==1||button==3||button==7||button==9)&&count==3){ 
-            
+        if((button==1||button==3||button==7||button==9)&&count==3){            
             setPlayerFirstBut(button);
             return 5;
         }else if((button==1||button==9)&&count==5&&(playerFirstBut==1||playerFirstBut==3||playerFirstBut==7||playerFirstBut==9)){            
@@ -53,8 +50,7 @@ public class Controller {
         }else if((button==3||button==7)&&count==5&&(playerFirstBut==1||playerFirstBut==3||playerFirstBut==7||playerFirstBut==9)){            
             int arr[] = {4,2,8,6};
             return arr[randomCreater.nextInt(4)];
-        }else if((button==2||button==8||button==4||button==6)&&count==5&&(playerFirstBut==1||playerFirstBut==3||playerFirstBut==7||playerFirstBut==9)){
-            
+        }else if((button==2||button==8||button==4||button==6)&&count==5&&(playerFirstBut==1||playerFirstBut==3||playerFirstBut==7||playerFirstBut==9)){            
             int arr[] = {1,3,9,7};
             arr = reList(arr, rest, 4);            
             return arr[randomCreater.nextInt(3)];       
@@ -152,44 +148,40 @@ public class Controller {
             setPlayerFirstBut(5);
             int arr[] = {1,3,7,9};           
             return arr[randomCreater.nextInt(4)];
-        }else if((button==1||button==9)&&count==5&&playerFirstBut==5){
-            int arr[] = {4,7,8,2,3,6};            
-            return arr[randomCreater.nextInt(6)];
-        }else if((button==3||button==7)&&count==5&&playerFirstBut==5){
-            int arr[] = {1,4,2,8,9,6};           
-            return arr[randomCreater.nextInt(6)];
+        }else if((button==1||button==9)&&count==5&&playerFirstBut==5){            
+            int arr[] = {7,3,9,1}; 
+            arr = restList(arr,rest);
+            return arr[randomCreater.nextInt(arr.length)];
+        }/*else if((button==3||button==7)&&count==5&&playerFirstBut==5){
+            int arr[] = {7,3,9,1};  
+            arr = restList(arr,rest);
+            return arr[randomCreater.nextInt(arr.length)];
         }else if(count==9&&playerFirstBut==5){
             return randomGiver(rest);
-        }
+        */
         
         if((button==1||button==3||button==7||button==9)&&count==3){     
             setPlayerFirstBut(button);
             return 5;
         }else if((button==1||button==9)&&count==5&&(playerFirstBut==1||playerFirstBut==3||playerFirstBut==7||playerFirstBut==9)){
-            int arr[] = {4,7,8,2,3,6};            
-            return arr[randomCreater.nextInt(6)];
+            int arr[] = {7,3,9,1}; 
+            arr = restList(arr,rest);
+            return arr[randomCreater.nextInt(arr.length)];
         }else if((button==3||button==7)&&count==5&&(playerFirstBut==1||playerFirstBut==3||playerFirstBut==7||playerFirstBut==9)){
-            int arr[] = {1,4,2,8,9,6};
-            return arr[randomCreater.nextInt(4)];
-        /*}else if((button==2||button==8)&&count==5&&(playerFirstBut==1||playerFirstBut==3||playerFirstBut==7||playerFirstBut==9)){
-            int arr[] = {4,6};
-            return arr[r.nextInt(2)];
-        }else if((button==4||button==6)&&count==5&&(playerFirstBut==1||playerFirstBut==3||playerFirstBut==7||playerFirstBut==9)){
-            int arr[] = {8,2};
-            return arr[r.nextInt(2)];
-        }else if(count==7&&(playerFirstBut==1||playerFirstBut==3||playerFirstBut==7||playerFirstBut==9)){
-            return randomGiver(rest);*/
-        }else if((playerFirstBut==1||playerFirstBut==3||playerFirstBut==7||playerFirstBut==9)){
+            int arr[] = {7,3,9,1}; 
+            arr = restList(arr,rest);
+            return arr[randomCreater.nextInt(arr.length)];       
+        }/*else if((playerFirstBut==1||playerFirstBut==3||playerFirstBut==7||playerFirstBut==9)){
             return randomGiver(rest);
-        }
+        }*/
         
-        if((button==2||button==4||button==6||button==8)&&count==3){     
+       /* if((button==2||button==4||button==6||button==8)&&count==3){     
             setPlayerFirstBut(button);            
             return 5;
         }else if((playerFirstBut==2||playerFirstBut==4||playerFirstBut==6||playerFirstBut==8)){
             return randomGiver(rest);
-        }        
-        return -1;
+        } */       
+        return randomGiver(rest);
     }
     
     int hard2(int ar[][],ArrayList<Integer> rest,int button,int count){  
@@ -236,8 +228,10 @@ public class Controller {
             }else if(!rest.contains(6)&&!rest.contains(1)||(!rest.contains(2)&&!rest.contains(9))){
                 return 7;
             }            
-        }        
-        return -1;
+        }else{
+            return randomGiver(rest);
+        }       
+        return randomGiver(rest);
     }
     
     int Winnner(int ar[][],int comColour){
@@ -448,6 +442,23 @@ public class Controller {
         int index = 0;
         int[] newL = new int[len-1];
         for(int i=0;i<len;i++){
+            if(rest.indexOf(arr[i])!=-1){                
+                newL[index++] = arr[i];
+            }
+        }       
+        return newL;
+    } 
+    
+    int[] restList(int[] arr,ArrayList<Integer> rest){
+        int index = 0;
+        for(int i=0;i<arr.length;i++){
+            if(rest.indexOf(arr[i])!=-1){                
+                index++;
+            }
+        }    
+        int[] newL = new int[index];
+        index = 0;
+        for(int i=0;i<arr.length;i++){
             if(rest.indexOf(arr[i])!=-1){                
                 newL[index++] = arr[i];
             }
