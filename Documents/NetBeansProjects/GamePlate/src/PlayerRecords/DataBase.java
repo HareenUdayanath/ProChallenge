@@ -87,7 +87,9 @@ public class DataBase {
             pst.executeUpdate();
             con.close();
             result = true;
-        }catch(SQLException se){}
+        }catch(SQLException se){
+            System.out.println("eeww");
+        }
         return result;
     }
     public void loadPlayer(ArrayList<Player> palyerList){
@@ -136,13 +138,12 @@ public class DataBase {
     }
     public Player loadAPlayer(String name){
         Player player;
-        try{
-            System.out.println("dddd");   
+        try{             
             Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
             con = DriverManager.getConnection(url, user, password);               
             pst = con.prepareStatement("SELECT * FROM Players");              
             use = pst.executeQuery();                
-            //System.out.println("dddd");            
+                        
             while(use.next()){       
                 
                 if(use.getString(1).equals(name)){
