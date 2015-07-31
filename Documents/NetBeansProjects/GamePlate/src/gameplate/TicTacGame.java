@@ -95,7 +95,7 @@ public class TicTacGame {
         
         networkedGame.setVisible(true);
         
-        p.drawImage("B.png");        
+        p.drawImage("BB.png");        
         p.drawBoard(); 
         if(isIsOtherFirst()&&isIsSingle()){              
             new Thread(){

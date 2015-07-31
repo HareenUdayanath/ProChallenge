@@ -205,7 +205,7 @@
                   <Color blue="f0" green="f0" red="f0" type="rgb"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/res/TTTP/start.png"/>
+                  <Image iconType="3" name="/res/start.png"/>
                 </Property>
               </Properties>
               <Events>
@@ -251,14 +251,14 @@
             <Component class="javax.swing.JLabel" name="jLabel4">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/res/TTTP/icoX.png"/>
+                  <Image iconType="3" name="/res/icoX.png"/>
                 </Property>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel5">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/res/TTTP/icoO.png"/>
+                  <Image iconType="3" name="/res/icoO.png"/>
                 </Property>
               </Properties>
             </Component>
@@ -271,7 +271,7 @@
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/res/TTTP/logo.png"/>
+              <Image iconType="3" name="/res/logo.png"/>
             </Property>
             <Property name="horizontalTextPosition" type="int" value="0"/>
           </Properties>

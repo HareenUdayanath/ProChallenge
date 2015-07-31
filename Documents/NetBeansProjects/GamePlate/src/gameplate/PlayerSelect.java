@@ -94,7 +94,7 @@ public class PlayerSelect extends javax.swing.JFrame {
         jLabel2.setText("Player 2 Name");
 
         start.setForeground(new java.awt.Color(240, 240, 240));
-        start.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/TTTP/start.png"))); // NOI18N
+        start.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/start.png"))); // NOI18N
         start.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 startActionPerformed(evt);
@@ -121,9 +121,9 @@ public class PlayerSelect extends javax.swing.JFrame {
             }
         });
 
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/TTTP/icoX.png"))); // NOI18N
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/icoX.png"))); // NOI18N
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/TTTP/icoO.png"))); // NOI18N
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/icoO.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -189,7 +189,7 @@ public class PlayerSelect extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Vivaldi", 1, 36)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/TTTP/logo.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/logo.png"))); // NOI18N
         jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Networked Game"));
