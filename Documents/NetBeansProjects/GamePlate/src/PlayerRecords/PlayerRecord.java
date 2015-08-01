@@ -6,6 +6,7 @@ package PlayerRecords;
 
 import javax.swing.JFrame;
 import javax.swing.table.TableModel;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -16,6 +17,7 @@ public class PlayerRecord extends javax.swing.JFrame {
     /**
      * Creates new form PlayerRecord
      */
+     private static Logger logger = Logger.getLogger(PlayerRecord.class);
     DataBase dataBase;
     public PlayerRecord(TableModel model){
         initComponents();
@@ -129,8 +131,9 @@ public class PlayerRecord extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.dataBase.deletePlayer(this.jTextField1.getText());
-        jTable1.setModel(new MyTableModel());    
-        System.out.println("ee");
+        jTable1.setModel(new MyTableModel()); 
+        logger.error(evt.getActionCommand());
+        //System.out.println("ee");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

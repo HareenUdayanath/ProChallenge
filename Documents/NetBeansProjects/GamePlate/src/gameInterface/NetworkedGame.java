@@ -14,6 +14,7 @@ import java.net.*;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.apache.log4j.Logger;
 
 
 
@@ -22,6 +23,8 @@ import javax.swing.JOptionPane;
  * @author Asus
  */
 public class NetworkedGame extends javax.swing.JFrame {
+    private static Logger logger = Logger.getLogger(NetworkedGame.class);
+
 
     /**
      * @return the player1
@@ -84,10 +87,10 @@ public class NetworkedGame extends javax.swing.JFrame {
             isServer = true;            
             
             serverIP = InetAddress.getLocalHost().getHostAddress();
-            //System.out.println("IP of my system is := "+NetworkedGame.getServerIP());
             return true;
         } catch (IOException ex) {
-            System.out.println("Sever cannot be created....");
+            logger.error(ex.getMessage());
+            //System.out.println("Sever cannot be created....");
             return false;
         }
     }
@@ -97,13 +100,15 @@ public class NetworkedGame extends javax.swing.JFrame {
         try {
             socket = serverSocket.accept();            
         } catch (IOException ex) {
-            System.out.println("Could not connect a player...");
+            logger.error(ex.getMessage());
+            //System.out.println("Could not connect a player...");
             return false;
         }
         try {
             output = new PrintWriter(socket.getOutputStream(),true);
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException ex) {
+            logger.error(ex.getMessage());
             return false;
             //Logger.getLogger(GameNetworked.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -114,17 +119,19 @@ public class NetworkedGame extends javax.swing.JFrame {
         try {
             socket = new Socket(ip,port);
         } catch (UnknownHostException ex) {
-            System.out.println("Cannot found host");
+            logger.error(ex.getMessage());
+            //System.out.println("Cannot found host");
             return false;
         } catch (IOException ex) {
-            System.out.println("Cannot connect");
+            logger.error(ex.getMessage());
+            //System.out.println("Cannot connect");
             return false;
         }
         try {
             output = new PrintWriter(socket.getOutputStream(),true);
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException ex) {
-            
+            logger.error(ex.getMessage());
             return false;
             //Logger.getLogger(GameNetworked.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -139,8 +146,11 @@ public class NetworkedGame extends javax.swing.JFrame {
             input.close();
             output.close();
         } catch (IOException ex) {
-            
-        }catch(java.lang.NullPointerException ex){}
+            logger.error(ex.getMessage());
+        }catch(java.lang.NullPointerException ex){
+            logger.error(ex.getMessage());
+        
+        }
     }
     
     
@@ -317,10 +327,11 @@ public class NetworkedGame extends javax.swing.JFrame {
                             try {                              
                                 num = Integer.valueOf(input.readLine());
                             } catch (IOException ex) {
-                           
+                                logger.error(ex.getMessage());
                                 JOptionPane.showMessageDialog(null,NetworkedGame.player1.getName()+" Other player has disconnected");
                                 temp.dispose();
                             }catch(NumberFormatException ex){
+                                logger.error(ex.getMessage());
                                 temp.dispose();
                                 TicTacGame.setIsOtherFirst(false);
                                 new PlayerSelect().setVisible(true);
@@ -401,9 +412,11 @@ public class NetworkedGame extends javax.swing.JFrame {
                             try {                               
                                 num = Integer.valueOf(input.readLine());
                             } catch (IOException ex) {
+                                logger.error(ex.getMessage());
                                 JOptionPane.showMessageDialog(null,NetworkedGame.player1.getName()+" Other player has disconnected");
                                 temp.dispose();
                             }catch(NumberFormatException ex){
+                                logger.error(ex.getMessage());
                                 temp.dispose();
                                 TicTacGame.setIsOtherFirst(false);
                                 new PlayerSelect().setVisible(true);
@@ -521,9 +534,11 @@ public class NetworkedGame extends javax.swing.JFrame {
         int num = -1;  
         try {               
             num = Integer.valueOf(input.readLine());
-        }catch(IOException ex) {           
+        }catch(IOException ex) { 
+            logger.error(ex.getMessage());
             this.dispose();
-        }catch(NumberFormatException ex){            
+        }catch(NumberFormatException ex){ 
+            logger.error(ex.getMessage());
             this.dispose();
             TicTacGame.setIsOtherFirst(false);
             new PlayerSelect().setVisible(true);
